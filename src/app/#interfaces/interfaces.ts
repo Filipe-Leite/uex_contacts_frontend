@@ -13,8 +13,8 @@ export interface Contact {
     neighborhood: string;
     city: string;
     state: string;
-    latitude: number;
-    longitude: number;
+    latitude: string | number | null;
+    longitude: string | number | null;
     name: string;
     cpf: string;
     phone: string;

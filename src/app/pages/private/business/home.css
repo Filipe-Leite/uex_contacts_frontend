@@ -2,13 +2,96 @@
     display: flex;
     height: 100vh;
     width: 100vw;
-    background-color: red;
+    background-color: rgb(255, 255, 255);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 
-    #container-home-left-side{
+    #container-home-left-side {
         display: flex;
+        flex-direction: column;
         height: 100vh;
-        width: 300px;
-        background-color: azure;
+        width: 700px;
+        margin: 5px;
+        border-radius: 5px;
+        background-color: rgb(255, 255, 255);
+        box-shadow: 
+            0 2.8px 2.2px rgba(0, 0, 0, 0.02),
+            0 6.7px 5.3px rgba(0, 0, 0, 0.028),
+            0 12.5px 10px rgba(0, 0, 0, 0.035),
+            0 22.3px 17.9px rgba(0, 0, 0, 0.042),
+            0 41.8px 33.4px rgba(0, 0, 0, 0.05),
+            0 100px 80px rgba(0, 0, 0, 0.07);
+        transition: box-shadow 0.3s ease;
+
+
+        #container-search-fields{
+            display: flex;
+            flex-direction: column;
+
+            .container-search-fields-first-line{
+                display: flex;
+                flex-direction: column;
+                margin: 20px 20px 5px 20px;
+                color: rgb(41, 41, 41);
+                font-weight: bold;
+            }
+
+            .container-search-fields-second-line{
+                display: flex;
+                flex-direction: column;
+                margin: 5px 20px 5px 20px;
+                color: rgb(41, 41, 41);
+                font-weight: bold;
+                
+                .container-search-fields-second-line-buttons{
+                    display: flex;
+                    align-items: center;
+
+                    input{
+                        width: 100%;
+                    }
+
+                    .button-search-contact{
+                        background-color: rgb(10, 116, 0);
+                        height: 20px;
+                        width: 20px;
+                        border: none;
+                        border-radius: 2px;
+                        margin-left: 5px;
+                    }
+
+                    .button-clear-field{
+                        background-color: rgb(15, 15, 15);
+                        height: 20px;
+                        width: 20px;
+                        border: none;
+                        border-radius: 2px;
+                        margin-left: 5px;
+                    }
+                }
+            }
+        }
+
+        .ul-contacts{
+            list-style: none;
+
+            padding: 20px;
+
+            li{
+                cursor: pointer;
+                padding: 5px;
+
+                &:hover{
+                    background-color: rgb(59, 59, 59);
+                    color: rgb(255, 255, 255);
+                }
+            }
+        }
+    }
+
+    #container-home-right-side{
+        display: flex;
+        width: 100%;
+        background-color: rgb(21, 255, 0);
     }
 
     #container-home-top{

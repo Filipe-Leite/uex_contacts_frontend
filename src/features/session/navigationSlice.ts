@@ -32,10 +32,12 @@ export interface UserSignOutData {
 
 export interface NavigationState {
   contacts: Contact[];
+  loadingContacts: boolean;
 }
 
 const initialState: NavigationState = {
-  contacts: []
+  contacts: [],
+  loadingContacts: false
 };
 
 interface GetContactsParams{
@@ -65,12 +67,16 @@ const navigationSlice = createSlice({
     builder
       .addCase(getRegisteredContacts.pending, (state) => {
         console.log("getRegisteredContacts.pending")
+        state.loadingContacts = true
       })
       .addCase(getRegisteredContacts.fulfilled, (state, action: any) => {
         console.log("getRegisteredContacts.fulfilled", action)
+        state.contacts = action.payload
+        state.loadingContacts = false
       })
       .addCase(getRegisteredContacts.rejected, (state, action: any) => {
         console.log("getRegisteredContacts.rejected")
+        state.loadingContacts = false
       })
   }
 });
