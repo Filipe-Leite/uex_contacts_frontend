@@ -37,7 +37,7 @@ npm install
 
 npm start
 
-#### 3.1 - Crie um usuário:
+### 3.1 - Crie um usuário:
 
 - Vá à página de cadastro de usuário e se registre
 
@@ -58,45 +58,45 @@ rails db:seed
 
 ### Liguagens de programacão
 
-#### - Ruby
-#### - Typescript
+- Ruby
+- Typescript
 
 ### Frameworks
 
-#### - Ruby on rails (Back-end)
-#### - React (Front-end)
+- Ruby on rails (Back-end)
+- React (Front-end)
 
 ### Banco de dados
 
-#### - Postgres
+- Postgres
 
 ### Bibliotecas e APIs
 
-#### - geocoder
-#### - geolocalization API do Google
-#### - react-leaflet
-#### - Devise token auth
+- geocoder
+- geolocalization API do Google
+- react-leaflet
+- Devise token auth
 
 ## O que foi feito?
 
-#### Usuário pode se cadastrar para utilizar a plataforma;
-#### Usuário pode logar para utilizar a plataforma;
-#### Usuário pode realizar pesquisa de endereços como ajuda ao cadastro de contatos;
-#### Usuário pode cadastrar um contato;
-#### O sistema valida se o CPF é válido e único entre os usuários cadastrados;
-#### Integracão com google maps para obter coordenadas geográficas dos enderecos cadastrados;
-#### O logradouro, a cidade e a unidade federativa são preenchidos automaticamente ao digitar o cep no campo devido e clicar em 'search';
-#### Usuário pode usar o campo de busca para procurar o contato cadastrado;
-#### Usuário pode selecionar o contato cadastrado e ver a localizacão no mapa, marcada com um pin;
-#### Usuário pode fazer logout.
+- Usuário pode se cadastrar para utilizar a plataforma;
+- Usuário pode logar para utilizar a plataforma;
+- Usuário pode realizar pesquisa de endereços como ajuda ao cadastro de contatos;
+- Usuário pode cadastrar um contato;
+- O sistema valida se o CPF é válido e único entre os usuários cadastrados;
+- Integracão com google maps para obter coordenadas geográficas dos enderecos cadastrados;
+- O logradouro, a cidade e a unidade federativa são preenchidos automaticamente ao digitar o cep no campo devido e clicar em 'search';
+- Usuário pode usar o campo de busca para procurar o contato cadastrado;
+- Usuário pode selecionar o contato cadastrado e ver a localizacão no mapa, marcada com um pin;
+- Usuário pode fazer logout.
 
 ## O que não foi feito?
 #### (até o momento que esse readme está sendo escrito)
 
-#### Usuário não pode recuperar a senha;
-#### Usuário não pode editar ou excluir contatos;
-#### Usuário não consegue fazer busca por CPF ou endereco, apenas por nome;
-#### Usuário não pode excluir a própria conta;
-#### Sistema de ajuda para o preenchimento do endereço do contato a cadastrar;
-#### Testes unitários.
+- Usuário não pode recuperar a senha;
+- Usuário não pode editar ou excluir contatos;
+- Usuário não consegue fazer busca por CPF ou endereco, apenas por nome;
+- Usuário não pode excluir a própria conta;
+- Sistema de ajuda para o preenchimento do endereço do contato a cadastrar;
+- Testes unitários.
 
