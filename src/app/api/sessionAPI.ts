@@ -91,3 +91,24 @@ export async function signOutUserWithAuthHeaders(headers: AuthHeaders) {
             return error.response?.data || error;
         });
 }
+
+export async function getSearchWithQuertTypeAndPage(authHeaders: AuthHeaders | undefined,
+                                                    searchTerm: string){
+
+
+    const PRIVATE_ROUTES = REQUEST_REQUIREMENTS.handlePrivateRoutes({ROUTE_PARAMS: 
+                                                                    { 
+                                                                        searchTerm: searchTerm
+                                                                    }});
+
+    return api
+        .get(PRIVATE_ROUTES.SEARCH, {
+            headers: convertKeysToSnakeCase(authHeaders)
+        })
+        .then((response: any) => {
+            return response;
+        })
+        .catch((error: any) => {
+            return error.response.data;
+        });
+}

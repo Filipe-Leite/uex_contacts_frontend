@@ -44,7 +44,8 @@ export interface PrivateRoutesParams {
 export function handlePrivateRoutes({ROUTE_PARAMS}: PrivateRoutesParams){
 
     const ENDPOINTS = {
-            CONTACTS: `/contacts`
+            CONTACTS: `/contacts`,
+            SEARCH: `/search/?q=${ROUTE_PARAMS?.searchTerm}`
         }
 
     return ENDPOINTS

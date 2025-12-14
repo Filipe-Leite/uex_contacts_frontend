@@ -1,9 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { signInUserWithEmailAndPassword,
-         createUserWithEmailAndPassword,
-         signOutUserWithAuthHeaders,
-         validateAuthHeader,
-         getRegisteredContactsForLoggedUser} from '../../app/api/sessionAPI';
+import { getRegisteredContactsForLoggedUser,
+         getSearchWithQuertTypeAndPage} from '../../app/api/sessionAPI';
 import { AuthHeaders, Contact} from '../../app/#interfaces/interfaces';
 import { convertKeysToCamelCase } from '../../genericFunctions';
 
@@ -12,36 +9,26 @@ export interface User {
   id?: number;
 }
 
-export interface UserSignUpData {
-  email: string;
-  password: string;
-  passwordConfirmation: string
-}
-
-export interface UserSignInData {
-  email: string;
-  password: string;
-}
-
-export interface UserSignOutData {
-  accept: string;
-  accessToken: string;
-  client: string;
-  uid: string;
-}
 
 export interface NavigationState {
   contacts: Contact[];
   loadingContacts: boolean;
+  contactsSearch: Contact[];
 }
 
 const initialState: NavigationState = {
   contacts: [],
+  contactsSearch: [],
   loadingContacts: false
 };
 
 interface GetContactsParams{
     authHeaders: AuthHeaders;
+}
+
+interface GetSearch{
+  authHeaders?: AuthHeaders;
+  searchTerm: string;
 }
 
 export const getRegisteredContacts = createAsyncThunk(
@@ -58,6 +45,21 @@ export const getRegisteredContacts = createAsyncThunk(
   }
 );
 
+export const getSearch = createAsyncThunk(
+    'sessionNavigation/getSearch',
+    async (payload: GetSearch, {rejectWithValue}) => {
+        const response = await getSearchWithQuertTypeAndPage(
+            payload.authHeaders,
+            payload.searchTerm
+        )
+        if (response.status >= 200 && response.status < 300) {
+            return response.data 
+        } else {
+          return rejectWithValue(response.data)
+        }
+    }
+)
+
 const navigationSlice = createSlice({
   name: 'sessionNavigation',
   initialState,
@@ -66,18 +68,28 @@ const navigationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getRegisteredContacts.pending, (state) => {
-        console.log("getRegisteredContacts.pending")
-        state.loadingContacts = true
+        state.contacts = [];
+        state.loadingContacts = true;
       })
-      .addCase(getRegisteredContacts.fulfilled, (state, action: any) => {
-        console.log("getRegisteredContacts.fulfilled", action)
-        state.contacts = action.payload
-        state.loadingContacts = false
+        .addCase(getRegisteredContacts.fulfilled, (state, action: any) => {
+          state.contacts = convertKeysToCamelCase(action.payload);
+          state.loadingContacts = false;
+        })
+          .addCase(getRegisteredContacts.rejected, (state) => {
+            state.loadingContacts = false;
+          })
+      .addCase(getSearch.pending, (state) => {
+        console.log("getSearch.pending >>> ")
+        state.contactsSearch = [];
       })
-      .addCase(getRegisteredContacts.rejected, (state, action: any) => {
-        console.log("getRegisteredContacts.rejected")
-        state.loadingContacts = false
-      })
+        .addCase(getSearch.fulfilled, (state, action: any) => {
+          console.log("getSearch.fulfilled >>> ", action.payload)
+          state.contactsSearch = convertKeysToCamelCase(action.payload);
+        })
+          .addCase(getSearch.rejected, (state) => {
+            console.log("getSearch.rejected >>> ")
+            state.contactsSearch = [];
+          })
   }
 });
 

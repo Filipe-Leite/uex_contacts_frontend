@@ -2,23 +2,28 @@ import { useEffect, useState } from 'react'
 import './home.css'
 import { AppDispatch, RootState } from '../../../store';
 import { useDispatch, useSelector } from 'react-redux';
-import { getRegisteredContacts } from '../../../../features/session/navigationSlice';
+import { getRegisteredContacts, getSearch } from '../../../../features/session/navigationSlice';
 import { signOutUser } from '../../../../features/session/sessionSlice';
 import MapWithMarker from '../../../components/MapWithMarker';
 import { Contact } from '../../../#interfaces/interfaces';
 import { CircularProgress } from '@mui/material';
+import AddIcon from '../../../../assets/add-icon-white.png'
+import AddContactModal from '../../../../features/modals/AddContactModal';
 
 export default function Home(){
     const dispatch = useDispatch<AppDispatch>();
     const authHeaders = useSelector((state: RootState) => state.session.authHeaders);
     const contacts = useSelector((state: RootState) => state.sessionNavigation.contacts);
+    const contactsSearch = useSelector((state: RootState) => state.sessionNavigation.contactsSearch);
     const loadingContacts = useSelector((state: RootState) => state.sessionNavigation.loadingContacts);
-    const [selectContact, setSelectContact] = useState<Contact>()
+    const [selectContact, setSelectContact] = useState<Contact>();
+    const [inputContactSearch, setInputContactSearch] = useState('');
+    const [showAddContanctModal, setShowAddContanctModal] = useState(false);
 
     console.log("selectContact >>> ", selectContact)
 
     useEffect(()=>{
-        async function fetchData(){
+        async function fetchContactsData(){
 
             if (authHeaders){
                 const response = await dispatch(getRegisteredContacts({authHeaders:authHeaders}))
@@ -27,8 +32,24 @@ export default function Home(){
             }
         }
 
-        fetchData();
-    },[])
+        async function fetchDisciplinesSearch(){
+            await dispatch(getSearch({authHeaders: authHeaders,
+                                      searchTerm: inputContactSearch.trim()}))
+        
+    
+                                                            }
+        if (inputContactSearch.length === 0){
+
+                fetchContactsData()
+
+            } else {
+
+                fetchDisciplinesSearch()
+            
+            }
+
+        fetchContactsData();
+    },[inputContactSearch])
 
     async function handleLoggout(){
 
@@ -38,6 +59,13 @@ export default function Home(){
 
     return(
         <div id='home-page'>
+            {showAddContanctModal && (
+                <AddContactModal 
+                    isOpen={showAddContanctModal}
+                    title={'Create Contact: '}
+                    onClose={() => setShowAddContanctModal(false)}
+                />
+            )}
             <div id='container-home-top'>
                 <button onClick={()=> {handleLoggout()}}>
                     Logout
@@ -57,23 +85,37 @@ export default function Home(){
                             Search:
                         </label>
                         <div className='container-search-fields-second-line-buttons'>
-                            <input/>
-                            <button className='button-search-contact'>
-
-                            </button>
-                            <button className='button-clear-field'>
-
+                            <input
+                                className='search-contact-input'
+                                type="text"
+                                placeholder="Search..."
+                                value={inputContactSearch}
+                                onChange={(e) => setInputContactSearch(e.target.value)}
+                            />
+                            <button className='button-add-contact'
+                                    onClick={()=>{setShowAddContanctModal(!showAddContanctModal)}}>
+                                <img src={AddIcon}/>
                             </button>
                         </div>
                     </div>
                 </div>
                 <ul className='ul-contacts'>
-                    {contacts ? contacts.length > 0 && contacts.map((contact: Contact, index) => (
-                        <li key={index}
-                         onClick={()=>{setSelectContact(contact)}}>
-                            <a>{contact.name}</a>
-                        </li>
-                    )): null }
+                        {inputContactSearch.length === 0 && 
+                         contacts ? contacts.length > 0 && contacts.map((contact: Contact, index) => (
+                            <li key={index}
+                            onClick={()=>{setSelectContact(contact)}}>
+                                <a>{contact.name}</a>
+                            </li>
+                        )) : null}
+
+                        {inputContactSearch.length !== 0 && 
+                         contactsSearch && contactsSearch.length > 0 && 
+                         contactsSearch.map((contact: Contact, index) => (
+                            <li key={index}
+                                onClick={()=>{setSelectContact(contact)}}>
+                                <a>{contact.name}</a>
+                            </li>
+                        ))}
                 
                     {loadingContacts ? 
                         <div>
