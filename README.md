@@ -1,46 +1,102 @@
-# Getting Started with Create React App
+# Teste para desenvolvedor fullstack da empresa UEX Tecnologia
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Consideracões iniciais
 
-## Available Scripts
+O teste consistia, basicamente em fazer um programa web que cadastrasse contatos com algumas informacões, entre elas o endereco. O programa deveria ter uma autenticacão completa, com gerenciamento de sessão e um cadastro de contatos. Um usuário deveria conseguir fazer um 'CRUD' completo de contatos, sendo que ao clicar em um dos contatos listados deveria mostrar em um mapa a localizacão exata do contato cadastrado.
 
-In the project directory, you can run:
+### Observacões
 
-### `npm start`
+1 - Os requisitos do projeto podem ser visualizados no pdf na raiz desse repositório sob o nome de 'teste-uex.pdf';
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+2 - Devido ao tempo curto (recebi o teste no dia 10/12/2025 e tive 4 dias para resolver, sendo que desses 4 dias só um deles foi um dia livre para realizar o teste), eu tomei algumas preocupacões de não perder muito tempo com algumas configuracões como docker e com algumas boas práticas. Me dediquei a entregar o "coracão" do teste dentro do prazo, como se fosse um MVP.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+3 - No teste dizia que o código deveria ser limpo e comentado (No meu entendimento, em um código limpo não existem comentários). No caso da minha solucao, devido ao cumprimento do prazo, não me preocupei com o código limpo em 100% dos programas, e como 'código limpo' e 'comentado' serem duas coisas excludentes eu não escrevi nenhuma linha de comentário.
 
-### `npm test`
+## Como rodar o projeto
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1 - clone o repositório do backend feito com o framework ruby on rails:
 
-### `npm run build`
+https://github.com/Filipe-Leite/uex_contacts_backend.git
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+clone o repositório do backend feito com o framework react:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+https://github.com/Filipe-Leite/uex_contacts_frontend.git
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+### 2 - Dentro do repositório do backend dê os seguintes comandos:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+bundle
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+rails db:create db:migrate
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+rails s
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 3 - Abra um outro terminal, vá ao diretório do frontend e dê os comandos:
 
-## Learn More
+npm install
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+npm start
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### 3.1 - Crie um usuário:
+
+- Vá à página de cadastro de usuário e se registre
+
+### 4 - Popule o banco de dados:
+
+- Os contatos estarão associados por chave estrangeira ao último usuário registrado.
+
+#### 4.1 - No terminal, no diretório do backend, dê o comando:
+
+rails db:seed
+
+#### 5 - Com o frontend aberto faca o seu login. Você deve ser redirecionado para a home do projeto, onde devem conter os usuários previamente cadastrados.
+
+
+#### 6 - Cadastre um novo usuário com endereco válido e procure por ele na tela home. Clique no contato. Você deve ver localizacão do seu novo contato no mapa
+
+## O que foi usado?
+
+### Liguagens de programacão
+
+#### - Ruby
+#### - Typescript
+
+### Frameworks
+
+#### - Ruby on rails (Back-end)
+#### - React (Front-end)
+
+### Banco de dados
+
+#### - Postgres
+
+### Bibliotecas e APIs
+
+#### - geocoder
+#### - geolocalization API do Google
+#### - react-leaflet
+#### - Devise token auth
+
+## O que foi feito?
+
+#### Usuário pode se cadastrar para utilizar a plataforma;
+#### Usuário pode logar para utilizar a plataforma;
+#### Usuário pode realizar pesquisa de endereços como ajuda ao cadastro de contatos;
+#### Usuário pode cadastrar um contato;
+#### O sistema valida se o CPF é válido e único entre os usuários cadastrados;
+#### Integracão com google maps para obter coordenadas geográficas dos enderecos cadastrados;
+#### O logradouro, a cidade e a unidade federativa são preenchidos automaticamente ao digitar o cep no campo devido e clicar em 'search';
+#### Usuário pode usar o campo de busca para procurar o contato cadastrado;
+#### Usuário pode selecionar o contato cadastrado e ver a localizacão no mapa, marcada com um pin;
+#### Usuário pode fazer logout.
+
+## O que não foi feito?
+#### (até o momento que esse readme está sendo escrito)
+
+#### Usuário não pode recuperar a senha;
+#### Usuário não pode editar ou excluir contatos;
+#### Usuário não consegue fazer busca por CPF ou endereco, apenas por nome;
+#### Usuário não pode excluir a própria conta;
+#### Sistema de ajuda para o preenchimento do endereço do contato a cadastrar;
+#### Testes unitários.
+

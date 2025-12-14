@@ -31,6 +31,7 @@ export interface User {
 export interface RouteParams {
     searchTerm?: string;
     userId?: number;
+    cep?: string;
 }
 
 export interface EndPoints {
@@ -44,8 +45,10 @@ export interface PrivateRoutesParams {
 export function handlePrivateRoutes({ROUTE_PARAMS}: PrivateRoutesParams){
 
     const ENDPOINTS = {
-            CONTACTS: `/contacts`,
-            SEARCH: `/search/?q=${ROUTE_PARAMS?.searchTerm}`
+            SEARCH: `/search/?q=${ROUTE_PARAMS?.searchTerm}`,
+            GET_ADDRESS_BY_CEP: `services/cep/${ROUTE_PARAMS?.cep}`,
+            GET_CONTACTS: `/contacts`,
+            CREATE_CONTACT: `/contacts`
         }
 
     return ENDPOINTS

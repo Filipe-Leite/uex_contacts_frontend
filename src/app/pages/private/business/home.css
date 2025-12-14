@@ -15,10 +15,10 @@
         background-color: rgb(255, 255, 255);
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
 
-
         #container-search-fields{
             display: flex;
             flex-direction: column;
+            margin-top: 20px;
 
             .container-search-fields-first-line{
                 display: flex;
@@ -99,29 +99,34 @@
         width: 100%;
         background-color: rgb(255, 255, 255);
         padding: 5px;
-    }
+        box-sizing: border-box;
 
-    #container-home-top{
-        display: flex;
-        position: absolute;
-        width: 100%;
-        justify-content: end;
+         #container-home-top{
+            display: flex;
+            position: absolute;
+            width: 60%;
+            justify-content: end;
+            z-index: 1000;
+            box-sizing: border-box;
 
-        button{
-            margin-right: 20px;
-            margin-top: 20px;
-            height: 40px;
-            width: 100px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            border: 2px solid black;
-            font-weight: bold;
+            button{
+                margin-right: 20px;
+                margin-top: 20px;
+                height: 40px;
+                width: 100px;
+                border-radius: 10px;
+                border: none;
+                cursor: pointer;
+                border: 2px solid black;
+                font-weight: bold;
 
-            &:hover{
-                background-color: black;
-                color: white;
+                &:hover{
+                    background-color: black;
+                    color: white;
+                }
             }
         }
     }
+
+   
 }

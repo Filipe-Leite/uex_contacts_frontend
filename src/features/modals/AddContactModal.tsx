@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import './addContactModal.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../app/store';
+import { createContact, CreateContactRequestBody, getAddressViaCep } from '../session/navigationSlice';
+import { toast } from 'react-toastify';
 
 interface ModalProps {
   isOpen: boolean;
@@ -41,6 +45,9 @@ const AddContactModal: React.FC<ModalProps> = ({
     state: ''
   });
 
+  const dispatch = useDispatch<AppDispatch>();
+    const authHeaders = useSelector((state: RootState) => state.session.authHeaders);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -49,80 +56,87 @@ const AddContactModal: React.FC<ModalProps> = ({
     }));
   };
 
+  async function handleCreateContact(formData: CreateContactRequestBody) {
+    const response = await dispatch(createContact({
+      authHeaders: authHeaders,
+      requestBody: formData
+    }));
+    
+    if (response.meta.requestStatus === 'rejected') {
+      toast.error(response.payload as string);
+    } else if (response.meta.requestStatus === 'fulfilled') {
+      toast.success('Contact created!'); 
+    }
+  }
+
+
   const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, '');
     
     if (value.length > 5) {
       value = value.slice(0, 5) + '-' + value.slice(5, 8);
     }
-    
+
     setFormData(prev => ({
       ...prev,
       cep: value
     }));
 
-    if (value.replace(/\D/g, '').length === 8) {
+    if (value.replace(/\D/g, '').length === 9) {
       handleCepSearch(value);
     }
   };
 
   const handleCepSearch = async (cep?: string) => {
-    const cepToSearch = cep || formData.cep.replace(/\D/g, '');
-    
-    if (cepToSearch.length !== 8) {
-      alert('CEP inválido');
-      return;
-    }
+  const cepToSearch = cep || formData.cep.replace(/\D/g, '');
+  
+  if (cepToSearch.length !== 8) {
+    alert('CEP need to have 8 numbers!');
+    return;
+  }
 
-    try {
-      const response = await fetch(`https://viacep.com.br/ws/${cepToSearch}/json/`);
-      const data = await response.json();
+  try {
+    
+    const response = await dispatch(getAddressViaCep({
+      authHeaders: authHeaders,
+      cep: cepToSearch
+    }));
+    
+
+    if (response && (
+        response.meta?.requestStatus === 'fulfilled' || 
+        response.payload ||
+        (response.type && response.type.includes('fulfilled'))
+    )) {
+      const data = response.payload || response;
       
-      if (!data.erro) {
-        setFormData(prev => ({
-          ...prev,
-          street: data.logradouro || '',
-          neighborhood: data.bairro || '',
-          city: data.localidade || '',
-          state: data.uf || ''
-        }));
-      } else {
-        alert('CEP não encontrado');
-      }
-    } catch (error) {
-      console.error('Erro ao buscar CEP:', error);
-      alert('Erro ao buscar CEP');
+      setFormData(prev => ({
+        ...prev,
+        street: data.logradouro || data.street || '',
+        neighborhood: data.bairro || data.neighborhood || '',
+        city: data.localidade || data.city || '',
+        state: data.uf || data.state || ''
+      }));
+      
+    } else {
+      alert('CEP não encontrado ou formato de resposta inesperado');
     }
-  };
+  } catch (error) {
+    alert('Erro ao buscar CEP');
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name.trim() || !formData.phone.trim()) {
-      alert('Nome e telefone são obrigatórios');
+      toast.error('Name and phone need to be filled')
       return;
     }
 
-    // TODO: Adicionar chamada à API aqui
-    console.log('Dados do formulário:', formData);
+    handleCreateContact(formData)
     
-    alert('Contato cadastrado com sucesso!');
-    handleClear();
-  };
-
-  const handleClear = () => {
-    setFormData({
-      name: '',
-      cpf: '',
-      phone: '',
-      cep: '',
-      street: '',
-      number: '',
-      complement: '',
-      neighborhood: '',
-      city: '',
-      state: ''
-    });
+    // alert('Contact created!');
   };
 
   if (!isOpen) return null;
@@ -154,14 +168,14 @@ const AddContactModal: React.FC<ModalProps> = ({
           <div className="container-contact-form">
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="name">Nome *</label>
+                <label htmlFor="name">Name *</label>
                 <input
                   type="text"
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="Digite o nome completo"
+                  placeholder="Name and surname"
                   required
                   maxLength={100}
                 />
@@ -181,7 +195,7 @@ const AddContactModal: React.FC<ModalProps> = ({
               </div>
 
               <div className="form-group">
-                <label htmlFor="phone">Telefone *</label>
+                <label htmlFor="phone">Phone *</label>
                 <input
                   type="tel"
                   id="phone"
@@ -219,20 +233,20 @@ const AddContactModal: React.FC<ModalProps> = ({
 
               <div className="address-grid">
                 <div className="form-group">
-                  <label htmlFor="street">Logradouro *</label>
+                  <label htmlFor="street">Street *</label>
                   <input
                     type="text"
                     id="street"
                     name="street"
                     value={formData.street}
                     onChange={handleInputChange}
-                    placeholder="Rua, Avenida, etc."
+                    placeholder="Street..."
                     required
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="number">Número *</label>
+                  <label htmlFor="number">Number *</label>
                   <input
                     type="text"
                     id="number"
@@ -245,7 +259,7 @@ const AddContactModal: React.FC<ModalProps> = ({
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="complement">Complemento</label>
+                  <label htmlFor="complement">Additional address information</label>
                   <input
                     type="text"
                     id="complement"
@@ -326,9 +340,6 @@ const AddContactModal: React.FC<ModalProps> = ({
               <div className="form-actions">
                 <button type="submit" className="submit-button">
                   Cadastrar Contato
-                </button>
-                <button type="button" onClick={handleClear} className="clear-button">
-                  Limpar
                 </button>
               </div>
             </form>

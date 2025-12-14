@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getRegisteredContactsForLoggedUser,
-         getSearchWithQuertTypeAndPage} from '../../app/api/sessionAPI';
+import { getAddressByCep, getRegisteredContactsForLoggedUser,
+         getSearchWithQuertTypeAndPage,
+         postCreateContactWithAddress} from '../../app/api/sessionAPI';
 import { AuthHeaders, Contact} from '../../app/#interfaces/interfaces';
 import { convertKeysToCamelCase } from '../../genericFunctions';
 
@@ -9,30 +10,54 @@ export interface User {
   id?: number;
 }
 
+interface GetContactsParams{
+    authHeaders: AuthHeaders;
+}
+
+interface GetSearchRequestData{
+  authHeaders?: AuthHeaders;
+  searchTerm: string;
+}
+
+interface GetAddressRequestData{
+  authHeaders?: AuthHeaders;
+  cep?: string;
+}
+
+interface PostCreateContactWithAddress{
+  authHeaders?: AuthHeaders;
+  requestBody: CreateContactRequestBody;
+}
+
+export interface CreateContactRequestBody{
+  name: string;
+  cpf: string;
+  phone: string;
+  cep: string;
+  street: string;
+  number: string;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
 
 export interface NavigationState {
   contacts: Contact[];
   loadingContacts: boolean;
   contactsSearch: Contact[];
+  error: string;
 }
 
 const initialState: NavigationState = {
   contacts: [],
   contactsSearch: [],
-  loadingContacts: false
+  loadingContacts: false,
+  error: ''
 };
 
-interface GetContactsParams{
-    authHeaders: AuthHeaders;
-}
-
-interface GetSearch{
-  authHeaders?: AuthHeaders;
-  searchTerm: string;
-}
-
 export const getRegisteredContacts = createAsyncThunk(
-  'session/getRegisteredContacts',
+  'sessionNavigation/getRegisteredContacts',
   async (payload: GetContactsParams, { rejectWithValue }) => {
     const response = await getRegisteredContactsForLoggedUser(
         payload.authHeaders
@@ -47,7 +72,7 @@ export const getRegisteredContacts = createAsyncThunk(
 
 export const getSearch = createAsyncThunk(
     'sessionNavigation/getSearch',
-    async (payload: GetSearch, {rejectWithValue}) => {
+    async (payload: GetSearchRequestData, {rejectWithValue}) => {
         const response = await getSearchWithQuertTypeAndPage(
             payload.authHeaders,
             payload.searchTerm
@@ -59,6 +84,36 @@ export const getSearch = createAsyncThunk(
         }
     }
 )
+
+export const getAddressViaCep = createAsyncThunk(
+  'sessionNavigation/getAddressViaCep',
+  async (payload: GetAddressRequestData, { rejectWithValue }) => {
+    const response = await getAddressByCep(
+        payload.authHeaders,
+        payload.cep
+    );
+
+    if (response.errors){
+      return rejectWithValue(response.errors);
+    }
+    return response.data;
+  }
+);
+
+export const createContact = createAsyncThunk(
+  'sessionNavigation/createContact',
+  async (payload: PostCreateContactWithAddress, { rejectWithValue }) => {
+    const response = await postCreateContactWithAddress(
+        payload.authHeaders,
+        payload.requestBody
+    );
+
+    if (response.error){
+      return rejectWithValue(response.error);
+    }
+    return response.data;
+  }
+);
 
 const navigationSlice = createSlice({
   name: 'sessionNavigation',
@@ -79,16 +134,22 @@ const navigationSlice = createSlice({
             state.loadingContacts = false;
           })
       .addCase(getSearch.pending, (state) => {
-        console.log("getSearch.pending >>> ")
         state.contactsSearch = [];
       })
         .addCase(getSearch.fulfilled, (state, action: any) => {
-          console.log("getSearch.fulfilled >>> ", action.payload)
           state.contactsSearch = convertKeysToCamelCase(action.payload);
         })
           .addCase(getSearch.rejected, (state) => {
-            console.log("getSearch.rejected >>> ")
             state.contactsSearch = [];
+          })
+      .addCase(createContact.pending, (state) => {
+          state.error = '';
+      })
+        .addCase(createContact.fulfilled, (state, action: any) => {
+          state.contacts = [convertKeysToCamelCase(action.payload), ...state.contacts] 
+        })
+          .addCase(createContact.rejected, (state, action: any) => {
+            state.error = action.payload.error;
           })
   }
 });

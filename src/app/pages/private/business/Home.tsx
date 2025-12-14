@@ -20,15 +20,12 @@ export default function Home(){
     const [inputContactSearch, setInputContactSearch] = useState('');
     const [showAddContanctModal, setShowAddContanctModal] = useState(false);
 
-    console.log("selectContact >>> ", selectContact)
 
     useEffect(()=>{
         async function fetchContactsData(){
 
             if (authHeaders){
                 const response = await dispatch(getRegisteredContacts({authHeaders:authHeaders}))
-
-                console.log("response getRegisteredContacts>> ", response)
             }
         }
 
@@ -59,6 +56,7 @@ export default function Home(){
 
     return(
         <div id='home-page'>
+
             {showAddContanctModal && (
                 <AddContactModal 
                     isOpen={showAddContanctModal}
@@ -66,19 +64,8 @@ export default function Home(){
                     onClose={() => setShowAddContanctModal(false)}
                 />
             )}
-            <div id='container-home-top'>
-                <button onClick={()=> {handleLoggout()}}>
-                    Logout
-                </button>
-            </div>
             <div id='container-home-left-side'>
                 <div id='container-search-fields'>
-                    <div className='container-search-fields-first-line'>
-                        <label>
-                            Contact Type:
-                        </label>
-                        <input/>
-                    </div>
 
                     <div className='container-search-fields-second-line'>
                         <label>
@@ -100,13 +87,14 @@ export default function Home(){
                     </div>
                 </div>
                 <ul className='ul-contacts'>
-                        {inputContactSearch.length === 0 && 
-                         contacts ? contacts.length > 0 && contacts.map((contact: Contact, index) => (
-                            <li key={index}
-                            onClick={()=>{setSelectContact(contact)}}>
-                                <a>{contact.name}</a>
-                            </li>
-                        )) : null}
+                        {inputContactSearch.length === 0 && Array.isArray(contacts) && contacts.length > 0 && (
+                            contacts.map((contact: Contact, index) => (
+                                <li key={index}
+                                onClick={()=>{setSelectContact(contact)}}>
+                                    <a>{contact.name}</a>
+                                </li>
+                            ))
+                        )}
 
                         {inputContactSearch.length !== 0 && 
                          contactsSearch && contactsSearch.length > 0 && 
@@ -127,6 +115,13 @@ export default function Home(){
                 </ul>
             </div>
             <div id='container-home-right-side'>
+
+                <div id='container-home-top'>
+                    <button onClick={()=> {handleLoggout()}}>
+                        Logout
+                    </button>
+                </div>
+
                 <MapWithMarker
                     lat={selectContact?.latitude ? Number(selectContact.latitude) : undefined}
                     lng={selectContact?.longitude ? Number(selectContact.longitude) : undefined}
