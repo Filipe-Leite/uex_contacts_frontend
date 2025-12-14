@@ -1,5 +1,7 @@
 # Teste para desenvolvedor fullstack da empresa UEX Tecnologia
 
+![funcionamento-do-programa](uex_contacts_frontend/Screenshot from 2025-12-14 20-56-11.png)
+
 ## Consideracões iniciais
 
 O teste consistia, basicamente em fazer um programa web que cadastrasse contatos com algumas informacões, entre elas o endereco. O programa deveria ter uma autenticacão completa, com gerenciamento de sessão e um cadastro de contatos. Um usuário deveria conseguir fazer um 'CRUD' completo de contatos, sendo que ao clicar em um dos contatos listados deveria mostrar em um mapa a localizacão exata do contato cadastrado.
