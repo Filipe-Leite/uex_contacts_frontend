@@ -1,6 +1,6 @@
 # Teste para desenvolvedor fullstack da empresa UEX Tecnologia
 
-![Funcionamento do programa](./Screenshot from 2025-12-14 20-56-11.png)
+![Funcionamento do programa](./uex-map.png)
 
 ## Consideracões iniciais
 
