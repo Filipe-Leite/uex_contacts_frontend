@@ -1,6 +1,6 @@
 # Teste para desenvolvedor fullstack da empresa UEX Tecnologia
 
-![Funcionamento do programa](./uex-map.png)
+<img width="1155" height="522" alt="Image" src="https://github.com/user-attachments/assets/65108326-88c2-43e1-86bf-9a5459f5e6fc" />
 
 ## Consideracões iniciais
 
